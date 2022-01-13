@@ -58,6 +58,30 @@ function saveCards($card) {
     echo "<h2>Bot</h2>";
     print_r($botHand);
 }
+
+function countCards($hand) {
+    $Total=0;
+    $numHand = count($hand);
+    for ($i=0; $i < $numHand; $i++) {
+        //if ($hand[$i]["value"] = 11 && $Total > 21) {
+        //    $Total = $Total + 1;
+        //} else {
+        $Total += $hand[$i]["value"];
+        //}
+    }
+    return $Total;
+}
+
+begin();
+echo "<br>";
+echo "<br>";
+echo "<br>";
+echo "<br>";
+
+echo countCards($playerHand);
+echo "<br>";
+echo countCards($botHand);
+
 ?>
 
 <!DOCTYPE html>

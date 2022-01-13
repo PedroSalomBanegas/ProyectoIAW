@@ -2,7 +2,7 @@
 // Spades, Hearts, Diamonds, Clubs
     $deck = [
         //SPADES
-        ["value" => 1, "type" => "spades", "reference" => "A"],
+        ["value" => 11, "type" => "spades", "reference" => "A"],
         ["value" => 2, "type" => "spades", "reference" => 2],
         ["value" => 3, "type" => "spades", "reference" => 3],
         ["value" => 4, "type" => "spades", "reference" => 4],
@@ -16,7 +16,7 @@
         ["value" => 10, "type" => "spades", "reference" => "Q"],
         ["value" => 10, "type" => "spades", "reference" => "K"],
         //HEARTS
-        ["value" => 1, "type" => "Hearts", "reference" => "A"],
+        ["value" => 11, "type" => "Hearts", "reference" => "A"],
         ["value" => 2, "type" => "Hearts", "reference" => 2],
         ["value" => 3, "type" => "Hearts", "reference" => 3],
         ["value" => 4, "type" => "Hearts", "reference" => 4],
@@ -30,7 +30,7 @@
         ["value" => 10, "type" => "Hearts", "reference" => "Q"],
         ["value" => 10, "type" => "Hearts", "reference" => "K"],
         //DIAMONDS
-        ["value" => 1, "type" => "Diamonds", "reference" => "A"],
+        ["value" => 11, "type" => "Diamonds", "reference" => "A"],
         ["value" => 2, "type" => "Diamonds", "reference" => 2],
         ["value" => 3, "type" => "Diamonds", "reference" => 3],
         ["value" => 4, "type" => "Diamonds", "reference" => 4],
@@ -44,7 +44,7 @@
         ["value" => 10, "type" => "Diamonds", "reference" => "Q"],
         ["value" => 10, "type" => "Diamonds", "reference" => "K"],
         //CLUBS
-        ["value" => 1, "type" => "Clubs", "reference" => "A"],
+        ["value" => 11, "type" => "Clubs", "reference" => "A"],
         ["value" => 2, "type" => "Clubs", "reference" => 2],
         ["value" => 3, "type" => "Clubs", "reference" => 3],
         ["value" => 4, "type" => "Clubs", "reference" => 4],
