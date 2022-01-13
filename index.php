@@ -4,8 +4,19 @@ include('includes.php');
 include('bot.php');
 
 $gameDeck = $deck;
-$playerHand = [];
-$botHand = [];
+
+if(isset($_COOKIE['playerHand'])){
+    $playerHand = json_decode($_COOKIE['playerHand'], true);
+} else {
+    $playerHand = [];
+}
+
+if(isset($_COOKIE['botHand'])){
+    $botHand = json_decode($_COOKIE['botHand'], true);
+} else {
+    $botHand = [];
+}
+
 $turn = true;
 
 function drawCard() {
@@ -50,8 +61,10 @@ function saveCards($card) {
     
     if ($turn) {
         $playerHand[] = $card;
+        setcookie("playerHand", json_encode($playerHand), (time()+3600*24*30));
     } else {
         $botHand[] = $card;
+        setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
     }
     echo "<h2>Player</h2>";
     print_r($playerHand);
@@ -94,15 +107,6 @@ echo countCards($botHand);
 </head>
 <body>
     <h1>BlackJack</h1>
-    <button id="draw">Draw Card</button>
+    <a href="?action=hit">Hit</a>
 </body>
-
-<script>
-    const drawButton = document.getElementById("draw");
-
-    drawButton.addEventListener("click", () => {
-        <?php drawCard() ?>
-    });
-</script>
-
 </html>
