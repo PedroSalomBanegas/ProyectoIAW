@@ -45,6 +45,8 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
         setcookie('deck', '', 0);
         setcookie('playerHand', '', 0);
         setcookie('botHand', '', 0);
+        $_SESSION=[]; //Mayor seguridad
+        $_SESSION['token']=true;
     } elseif ($action == "new" && !isset($_SESSION['status'])) {
         begin();
     }
@@ -54,6 +56,7 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     //First time enter 
     clearCookies();
     // setcookie('token', true, (time()+3600*24*30)); //HACERLO CON SESIONES!!!!
+    $_SESSION=[];
     $_SESSION['token']=true;
 }
 
@@ -170,11 +173,11 @@ function clearCookies(){
     if(isset($_GET['action']) && isset($_SESSION['token'])){
         $action = $_GET['action'];
     
-        if($action == "hit" ){
+        if($action == "hit" && isset($_SESSION['status'])){
             echo '<a href="?action=hit">Hit</a>';
             echo '<br>';
             echo '<a href="?action=end">End Game</a>';
-        } elseif ($action == "end") {
+        } elseif ($action == "end" && isset($_SESSION['status'])) {
             echo '<a href="?action=new">New Game</a>';
         } elseif ($action == "new" && !isset($_SESSION['status'])) {
             echo '<a href="?action=hit">Hit</a>';
@@ -184,6 +187,8 @@ function clearCookies(){
         } else {
             echo '<h2>It seems that something has gone wrong...</h2>';
             echo '<a href="index.php">Return</a>';
+            echo $_SESSION['token'];
+            echo $_SESSION['status'];
         }
     
     } elseif(isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) { 
