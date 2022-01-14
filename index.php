@@ -41,6 +41,7 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
 
     if($action == "hit" && isset($_SESSION['status'])){
         drawCardF();
+
     } elseif ($action == "end" && isset($_SESSION['status'])) {
         setcookie('deck', '', 0);
         setcookie('playerHand', '', 0);
@@ -130,14 +131,25 @@ function saveCards($card) {
 }
 
 function countCards($hand) {
+    //Author: Jaime
     $Total=0;
     $numHand = count($hand);
     for ($i=0; $i < $numHand; $i++) {
-        //if ($hand[$i]["value"] = 11 && $Total > 21) {
-        //    $Total = $Total + 1;
-        //} else {
+        if ($hand[$i]["value"] == 11 && $Total > 21) {
+            $Total = $Total + 1;
+        } else {
         $Total += $hand[$i]["value"];
-        //}
+        }
+        if ($Total >= 21) {
+            $Total=0;
+            for ($i=0; $i < $numHand; $i++) { 
+                if ($hand[$i]["value"] == 11) {
+                    $Total = $Total + 1;
+                } else {
+                    $Total += $hand[$i]["value"]; 
+                }
+            }
+        }
     }
     return $Total;
 }
