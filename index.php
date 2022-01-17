@@ -41,7 +41,8 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
 
     if($action == "hit" && isset($_SESSION['status'])){
         drawCardF();
-
+    } else if ($action == "stand" && isset($_SESSION['status'])){
+        stand($turn);
     } elseif ($action == "end" && isset($_SESSION['status'])) {
         setcookie('deck', '', 0);
         setcookie('playerHand', '', 0);
@@ -64,12 +65,28 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
 function drawCard() {
     // Author: Pedro
     global $gameDeck;
+    global $playerHand;
+    global $botHand;
 
     $randomCard = rand(0, count($gameDeck) - 1);
     saveCards($gameDeck[$randomCard]);
     unset($gameDeck[$randomCard]);
     $gameDeck = array_values($gameDeck);
     setcookie("deck", json_encode($gameDeck), (time()+3600*24*30));
+
+    //stand if user have more than 21
+    if ($turn) {
+        $total = countCards($playerHand);
+        if ($total > 21) {
+            stand($turn);
+        }
+    } else {
+        $total = countCards($botHand);
+        if ($total > 21) {
+            unset($botHand[count($botHand - 1)]);
+            stand($turn);
+        }
+    }
 }
 
 function drawCardF() {
@@ -154,6 +171,14 @@ function countCards($hand) {
     return $Total;
 }
 
+function stand($turn){
+    if ($turn) {
+        bot();
+    } else {
+        endgame();
+    }
+}
+
 function clearCookies(){
     setcookie('deck', '', 0);
     setcookie('playerHand', '', 0);
@@ -188,11 +213,15 @@ function clearCookies(){
         if($action == "hit" && isset($_SESSION['status'])){
             echo '<a href="?action=hit">Hit</a>';
             echo '<br>';
+            echo '<a href="?action=stand">Stand</a>';
+            echo '<br>';
             echo '<a href="?action=end">End Game</a>';
         } elseif ($action == "end" && isset($_SESSION['status'])) {
             echo '<a href="?action=new">New Game</a>';
         } elseif ($action == "new" && !isset($_SESSION['status'])) {
             echo '<a href="?action=hit">Hit</a>';
+            echo '<br>';
+            echo '<a href="?action=stand">Stand</a>';
             echo '<br>';
             echo '<a href="?action=end">End Game</a>';
             $_SESSION['status']=true; //Generate here for security
