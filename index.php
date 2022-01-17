@@ -41,7 +41,8 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
 
     if($action == "hit" && isset($_SESSION['status'])){
         drawCardF();
-
+    } else if ($action == "stand" && isset($_SESSION['status'])){
+        stand($turn);
     } elseif ($action == "end" && isset($_SESSION['status'])) {
         setcookie('deck', '', 0);
         setcookie('playerHand', '', 0);
@@ -212,11 +213,15 @@ function clearCookies(){
         if($action == "hit" && isset($_SESSION['status'])){
             echo '<a href="?action=hit">Hit</a>';
             echo '<br>';
+            echo '<a href="?action=stand">Stand</a>';
+            echo '<br>';
             echo '<a href="?action=end">End Game</a>';
         } elseif ($action == "end" && isset($_SESSION['status'])) {
             echo '<a href="?action=new">New Game</a>';
         } elseif ($action == "new" && !isset($_SESSION['status'])) {
             echo '<a href="?action=hit">Hit</a>';
+            echo '<br>';
+            echo '<a href="?action=stand">Stand</a>';
             echo '<br>';
             echo '<a href="?action=end">End Game</a>';
             $_SESSION['status']=true; //Generate here for security
