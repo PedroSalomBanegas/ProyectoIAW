@@ -81,16 +81,16 @@ function drawCard() {
     // stand if user have more than 21
     if ($_SESSION['turn']) {
         $total = countCards($playerHand);
-        if ($total > 21) {
+        if ($total >= 21) {
             stand($_SESSION['turn']);
         }
     } else {
         $total = countCards($botHand);
-        $rand = rand(1,9)
+        $rand = rand(1,10);
         if ($total > 21 && $rand > 3) {
             unset($botHand[count($botHand) - 1]);
             stand($_SESSION['turn']);
-        } else {
+        } elseif ($total > 21) {
             stand($_SESSION['turn']);
         }
     }

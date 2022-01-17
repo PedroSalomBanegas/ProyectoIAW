@@ -9,7 +9,7 @@
        } else {
            $_SESSION['turn'] = false;
            while ($totalBot < 21) {
-               drawCardF();
+               drawCard();
                $totalBot = countCards($botHand);
            }
            $turn = true;
