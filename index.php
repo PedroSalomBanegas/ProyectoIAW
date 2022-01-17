@@ -12,6 +12,8 @@ session_start();
 include('includes.php');
 include('bot.php');
 
+$_SESSION['turn'] = true;
+
 // -- EXPERIMENTAL!! --
 if(isset($_GET['action']) && isset($_SESSION['token'])){
     if ($_GET['action'] == "new") {
@@ -34,7 +36,6 @@ if(isset($_COOKIE['botHand']) && isset($_SESSION['token'])){
     $botHand = [];
 }
 
-$turn = true;
 
 if(isset($_GET['action']) && isset($_SESSION['token'])){
     $action = $_GET['action'];
@@ -42,7 +43,7 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     if($action == "hit" && isset($_SESSION['status'])){
         drawCardF();
     } else if ($action == "stand" && isset($_SESSION['status'])){
-        stand($turn);
+        stand($_SESSION['turn']);
     } elseif ($action == "end" && isset($_SESSION['status'])) {
         setcookie('deck', '', 0);
         setcookie('playerHand', '', 0);
@@ -50,7 +51,10 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
         $_SESSION=[]; //Mayor seguridad
         $_SESSION['token']=true;
     } elseif ($action == "new" && !isset($_SESSION['status'])) {
+        $_SESSION['turn'] = true;
         begin();
+    } elseif ($action == "endgame" && isset($_SESSION['status'])) {
+        $result = endgame();
     }
 } elseif (isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) {
     clearCookies();
@@ -74,17 +78,17 @@ function drawCard() {
     $gameDeck = array_values($gameDeck);
     setcookie("deck", json_encode($gameDeck), (time()+3600*24*30));
 
-    //stand if user have more than 21
-    if ($turn) {
+    // stand if user have more than 21
+    if ($_SESSION['turn']) {
         $total = countCards($playerHand);
         if ($total > 21) {
-            stand($turn);
+            stand($_SESSION['turn']);
         }
     } else {
         $total = countCards($botHand);
         if ($total > 21) {
-            unset($botHand[count($botHand - 1)]);
-            stand($turn);
+            unset($botHand[count($botHand) - 1]);
+            stand($_SESSION['turn']);
         }
     }
 }
@@ -101,6 +105,25 @@ function drawCardF() {
     $gameDeck = array_values($gameDeck);
     setcookie("deck", json_encode($gameDeck), (time()+3600*24*30));
 
+    //stand if user have more than 21
+    if ($_SESSION['turn']) {
+        $total = countCards($playerHand);
+        if ($total > 21) {
+            stand($_SESSION['turn']);
+            echo "Superior a 21";
+        }
+    } else {
+        $total = countCards($botHand);
+        echo $total;
+        if ($total > 21) {
+            unset($botHand[count($botHand) - 1]);
+            $botHand = array_values($botHand);
+            setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+            echo "Bot superior a 21";
+            stand($_SESSION['turn']);
+        }
+    }
+
     echo "<h2>Player Hand</h2> <br>\n";
     print_r($playerHand);
     echo "<h2>Bot Hand</h2> <br>\n";
@@ -112,7 +135,6 @@ function begin() {
     setcookie('playerHand', '', 0);
     setcookie('botHand', '', 0);
 
-    global $turn;
     global $playerHand;
     global $botHand;
 
@@ -120,11 +142,11 @@ function begin() {
             if ($i < 2) {
                 drawCard();
             } else {
-                $turn = false;
+                $_SESSION['turn'] = false;
                 drawCard();
             }
         }
-        $turn = true;
+        $_SESSION['turn'] = true;
 
         echo "<h2>Player Hand</h2> <br>\n";
         print_r($playerHand);
@@ -136,9 +158,8 @@ function saveCards($card) {
     //Author: Jaime
     global $playerHand;
     global $botHand;
-    global $turn;
     
-    if ($turn) {
+    if ($_SESSION['turn']) {
         $playerHand[] = $card;
         setcookie("playerHand", json_encode($playerHand), (time()+3600*24*30));
     } else {
@@ -172,10 +193,12 @@ function countCards($hand) {
 }
 
 function stand($turn){
+    echo "<b>$turn</b>";
     if ($turn) {
         bot();
     } else {
-        endgame();
+        header('Location: http://localhost/ProyectoIAW/index.php?action=endgame');
+        echo "HOLAAAAAAAAAAAAAAAAA";
     }
 }
 
@@ -225,6 +248,14 @@ function clearCookies(){
             echo '<br>';
             echo '<a href="?action=end">End Game</a>';
             $_SESSION['status']=true; //Generate here for security
+        } elseif ($action == "endgame" && isset($_SESSION['status'])) {
+            echo countCards($playerHand) . "<br><br>";
+            print_r($playerHand);
+            echo "<br>";
+            echo countCards($botHand) . "<br><br>";
+            print_r($botHand);
+            echo "<br>";
+            echo $result;
         } else {
             echo '<h2>It seems that something has gone wrong...</h2>';
             echo '<a href="index.php">Return</a>';

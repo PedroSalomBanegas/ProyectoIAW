@@ -5,10 +5,11 @@
        $totalBot = countCards($botHand);
        //print_r($botHand);
        if ($totalBot == 21 ) {
+           stand($_SESSION['turn']);
        } else {
-           $turn = false;
+           $_SESSION['turn'] = false;
            while ($totalBot < 21) {
-               drawCard();
+               drawCardF();
                $totalBot = countCards($botHand);
            }
            $turn = true;
@@ -16,6 +17,7 @@
    }
 
    function endgame() {
+       echo "<h1>ENDGAME</h1>";
        global $playerHand;
        global $botHand;
 
@@ -23,11 +25,13 @@
        $finalBot = countCards($botHand);
 
        if ($finalPlayer > 21) {
-           if ($totalBot > 21) {
+           if ($finalBot > 21) {
                return "Tie";
            } else {
                return "Bot Wins";
            }
+       } elseif ($finalPlayer == $finalBot) {
+            return "Tie";
        } else {
            if ($finalBot > 21) {
                return "Player Wins";
