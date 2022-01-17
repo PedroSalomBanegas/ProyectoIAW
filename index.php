@@ -5,8 +5,8 @@
 // No se van borrar las cookies si se utilizará alguna función que las genere (ej: begin, hit, etc...)
 // ¿Solución?
 // Para evitar que alguien no ejecute la web con una acción directa y rompa la ejecución del juego, poner una cookie de control que se genere con ?action=new??
-// ------------------------
-
+// -------------------------
+//
 session_start();
 
 include('includes.php');
