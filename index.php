@@ -178,10 +178,10 @@ function countCards($hand) {
         } else {
         $Total += $hand[$i]["value"];
         }
-        if ($Total >= 21) {
+        if ($Total > 21) {
             $Total=0;
             for ($i=0; $i < $numHand; $i++) { 
-                if ($hand[$i]["value"] == 11) {
+                if ($hand[$i]["value"] == 11 && $Total > 21) {
                     $Total = $Total + 1;
                 } else {
                     $Total += $hand[$i]["value"]; 
@@ -259,8 +259,6 @@ function clearCookies(){
         } else {
             echo '<h2>It seems that something has gone wrong...</h2>';
             echo '<a href="index.php">Return</a>';
-            echo $_SESSION['token'];
-            echo $_SESSION['status'];
         }
     
     } elseif(isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) { 
