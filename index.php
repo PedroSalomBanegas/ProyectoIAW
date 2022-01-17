@@ -86,8 +86,11 @@ function drawCard() {
         }
     } else {
         $total = countCards($botHand);
-        if ($total > 21) {
+        $rand = rand(1,9)
+        if ($total > 21 && $rand > 3) {
             unset($botHand[count($botHand) - 1]);
+            stand($_SESSION['turn']);
+        } else {
             stand($_SESSION['turn']);
         }
     }
@@ -181,7 +184,7 @@ function countCards($hand) {
         if ($Total > 21) {
             $Total=0;
             for ($i=0; $i < $numHand; $i++) { 
-                if ($hand[$i]["value"] == 11 && $Total > 21) {
+                if ($hand[$i]["value"] == 11) {
                     $Total = $Total + 1;
                 } else {
                     $Total += $hand[$i]["value"]; 
@@ -236,17 +239,13 @@ function clearCookies(){
         if($action == "hit" && isset($_SESSION['status'])){
             echo '<a href="?action=hit">Hit</a>';
             echo '<br>';
-            echo '<a href="?action=stand">Stand</a>';
-            echo '<br>';
-            echo '<a href="?action=end">End Game</a>';
+            echo '<a href="?action=stand">Stand</a>';   
         } elseif ($action == "end" && isset($_SESSION['status'])) {
             echo '<a href="?action=new">New Game</a>';
         } elseif ($action == "new" && !isset($_SESSION['status'])) {
             echo '<a href="?action=hit">Hit</a>';
             echo '<br>';
             echo '<a href="?action=stand">Stand</a>';
-            echo '<br>';
-            echo '<a href="?action=end">End Game</a>';
             $_SESSION['status']=true; //Generate here for security
         } elseif ($action == "endgame" && isset($_SESSION['status'])) {
             echo countCards($playerHand) . "<br><br>";
