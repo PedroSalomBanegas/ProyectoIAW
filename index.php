@@ -152,9 +152,9 @@ function begin() {
         $_SESSION['turn'] = true;
 
         echo "<h2>Player Hand</h2> <br>\n";
-        print_r($playerHand);
+        echo arrayToBJ($playerHand);
         echo "<h2>Bot Hand</h2> <br>\n";
-        print_r($botHand);
+        echo arrayToBJ($botHand);
     }
 
 function saveCards($card) {
@@ -219,6 +219,19 @@ function clearCookies(){
 // echo countCards($playerHand);
 // echo "<br>";
 // echo countCards($botHand);
+
+function arrayToBJ($hand) {
+    $numHand = count($hand);
+    $string = "";
+    for ($i=0; $i < $numHand; $i++) { 
+        if ($numHand-1 == $i ) {
+        $string .= $hand[$i]["type"].$hand[$i]["reference"];
+        } else {
+            $string .= $hand[$i]["type"].$hand[$i]["reference"]." , ";
+        }
+    }
+    return $string;
+}
 
 ?>
 
