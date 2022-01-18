@@ -3,11 +3,11 @@
        global $botHand;
        global $turn;
        $totalBot = countCards($botHand);
+       $_SESSION['turn'] = false;
        //print_r($botHand);
        if ($totalBot == 21 ) {
            stand($_SESSION['turn']);
        } else {
-           $_SESSION['turn'] = false;
            while ($totalBot < 21) {
                drawCard();
                $totalBot = countCards($botHand);

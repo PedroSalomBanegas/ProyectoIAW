@@ -41,7 +41,7 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     $action = $_GET['action'];
 
     if($action == "hit" && isset($_SESSION['status'])){
-        drawCardF();
+        drawCard();
     } else if ($action == "stand" && isset($_SESSION['status'])){
         stand($_SESSION['turn']);
     } elseif ($action == "end" && isset($_SESSION['status'])) {
@@ -89,6 +89,8 @@ function drawCard() {
         $rand = rand(1,10);
         if ($total > 21 && $rand > 3) {
             unset($botHand[count($botHand) - 1]);
+            $botHand = array_values($botHand);
+            setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
             stand($_SESSION['turn']);
         } elseif ($total > 21) {
             stand($_SESSION['turn']);
@@ -175,6 +177,8 @@ function countCards($hand) {
     //Author: Jaime
     $Total=0;
     $numHand = count($hand);
+    // print_r($hand);
+    // echo "<br><br>";
     for ($i=0; $i < $numHand; $i++) {
         if ($hand[$i]["value"] == 11 && $Total > 21) {
             $Total = $Total + 1;
@@ -192,16 +196,20 @@ function countCards($hand) {
             }
         }
     }
-    return $Total;
+    if ($Total == 2) {
+        return 12;
+    } else {
+        return $Total;
+    }
 }
 
 function stand($turn){
     echo "<b>$turn</b>";
     if ($turn) {
+        echo "HOLAAA";
         bot();
     } else {
         header('Location: http://localhost/ProyectoIAW/index.php?action=endgame');
-        echo "HOLAAAAAAAAAAAAAAAAA";
     }
 }
 
