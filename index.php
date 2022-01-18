@@ -160,9 +160,6 @@ function stand($turn){
         bot();
     } else {
         header('Location: http://localhost/ProyectoIAW/index.php?action=end');
-        print_r($botHand);
-        echo "<br>";
-        echo countCards($botHand);
     }
 }
 

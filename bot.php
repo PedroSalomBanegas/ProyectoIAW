@@ -11,16 +11,17 @@
            while ($totalBot < 21) {
                drawCard();
                $totalBot = countCards($botHand);
-               print_r($botHand);
-               echo " - " . countCards($botHand);
-               echo "<br><br>";
                if ($totalBot > 21) {
-                    unset($botHand[count($botHand) - 1]);
-                    $botHand = array_values($botHand);
-                    setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
-                    print_r(json_decode($_COOKIE['playerHand'], true));
-                    echo " - " . countCards($botHand);
-                    stand($_SESSION['turn']);
+                   $error = rand(1, 10);
+                   if ($error >= 5) {
+                        unset($botHand[count($botHand) - 1]);
+                        $botHand = array_values($botHand);
+                        setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+                        stand($_SESSION['turn']);
+                   } else {
+                        setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+                        stand($_SESSION['turn']);
+                   }
                 }
            }
        }
