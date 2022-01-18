@@ -1,0 +1,33 @@
+html{
+    background-color: rgb(13, 13, 13);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.table{
+    width: 65%;
+    border: 1.5px solid rgb(230, 230, 230);
+    border-radius: 8px;
+    background-color: rgb(0, 94, 0);
+}
+
+.score{
+    margin: 8px;
+    text-align: center;
+}
+
+.score h2, span{
+    color: rgb(230, 230, 230);
+}
+
+.score span{
+    font-size: 16px;
+}
