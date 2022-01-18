@@ -11,8 +11,18 @@
            while ($totalBot < 21) {
                drawCard();
                $totalBot = countCards($botHand);
+               print_r($botHand);
+               echo " - " . countCards($botHand);
+               echo "<br><br>";
+               if ($totalBot > 21) {
+                    unset($botHand[count($botHand) - 1]);
+                    $botHand = array_values($botHand);
+                    setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+                    print_r(json_decode($_COOKIE['playerHand'], true));
+                    echo " - " . countCards($botHand);
+                    stand($_SESSION['turn']);
+                }
            }
-           $turn = true;
        }
    }
 
@@ -21,6 +31,9 @@
        global $playerHand;
        global $botHand;
 
+       print_r($playerHand);
+       echo "<br><br>";
+       print_r($botHand);
        $finalPlayer = countCards($playerHand);
        $finalBot = countCards($botHand);
 
