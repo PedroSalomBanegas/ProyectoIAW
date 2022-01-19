@@ -60,10 +60,12 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
 } elseif (isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) {
     clearCookies();
 } else {
+    $username = $_SESSION['fname'];
     //First time enter 
     clearCookies();
     // setcookie('token', true, (time()+3600*24*30)); //HACERLO CON SESIONES!!!!
     $_SESSION=[];
+    $_SESSION['fname'] = $username;
     $_SESSION['token']=true;
 }
 
@@ -235,6 +237,7 @@ function arrayToBJ($hand) {
     } else {
         echo '<a href="?action=new">New Game</a>';
     }
+    echo $_SESSION['fname'];    
     ?>
 </body>
 </html>
