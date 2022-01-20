@@ -6,7 +6,7 @@
 // ¿Solución?
 // Para evitar que alguien no ejecute la web con una acción directa y rompa la ejecución del juego, poner una cookie de control que se genere con ?action=new??
 // -------------------------
-//
+
 session_start();
 
 include('includes.php');
@@ -43,19 +43,17 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     if($action == "hit" && isset($_SESSION['status'])){
         drawCard();
     } else if ($action == "stand" && isset($_SESSION['status'])){
+        echo $_SESSION['turn'];
         stand($_SESSION['turn']);
     } elseif ($action == "new" && !isset($_SESSION['status'])) {
         $_SESSION['turn'] = true;
         begin();
-    } elseif ($action == "end" && isset($_SESSION['status'])) {
-        echo "<h2>Dealer</h2>";
-        print_r($botHand);
-        echo " - ";
-        echo countCards($botHand);
-        echo "<h2>Player</h2>";
-        print_r($playerHand);
-        echo " - ";
-        echo countCards($playerHand);
+    } elseif ($action == "reset" && isset($_SESSION['status'])) {
+        clearCookies();
+        $_SESSION=[];
+        $_SESSION['fname'] = $username;
+        $_SESSION['token']=true;
+        header('Location: http://localhost/ProyectoIAW/index.php');
     }
 } elseif (isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) {
     clearCookies();
@@ -104,11 +102,6 @@ function begin() {
             }
         }
         $_SESSION['turn'] = true;
-
-        echo "<h2>Player Hand</h2> <br>\n";
-        echo arrayToBJ($playerHand);
-        echo "<h2>Bot Hand</h2> <br>\n";
-        echo arrayToBJ($botHand);
     }
 
 function saveCards($card) {
@@ -193,51 +186,35 @@ function arrayToBJ($hand) {
     return $string;
 }
 
-?>
+if(isset($_GET['action']) && isset($_SESSION['token'])){
+    $action = $_GET['action'];
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>BlackJack</h1>
-    <?php 
-    if(isset($_GET['action']) && isset($_SESSION['token'])){
-        $action = $_GET['action'];
-    
-        if($action == "hit" && isset($_SESSION['status'])){
+    if ($_GET['action'] == "end" && isset($_SESSION['status'])) {
+        include('table.html');
+        echo '<a href="?action=reset">Play again</a>';
+    } elseif ($action == "hit" && isset($_SESSION['status'])){
+            include('table.html');
             echo '<a href="?action=hit">Hit</a>';
-            echo '<br>';
             echo '<a href="?action=stand">Stand</a>';   
-        } elseif ($action == "new" && !isset($_SESSION['status'])) {
+    } elseif ($action == "new" && !isset($_SESSION['status'])) {
+            include('table.html');
             echo '<a href="?action=hit">Hit</a>';
-            echo '<br>';
             echo '<a href="?action=stand">Stand</a>';
             $_SESSION['status']=true; //Generate here for security
-        } elseif ($action == "end" && isset($_SESSION['status'])) {
-            // echo countCards($playerHand) . "<br><br>";
-            // print_r($playerHand);
-            // echo "<br>";
-            // echo countCards($botHand) . "<br><br>";
-            // print_r($botHand);
-            // echo "<br>";
-            // echo $result;
-        } else {
+    } else {
+            include('table.html');
             echo '<h2>It seems that something has gone wrong...</h2>';
             echo '<a href="index.php">Return</a>';
-        }
+    }
     
-    } elseif(isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) { 
+    } elseif (isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) { 
         echo '<h2>It seems that something has gone wrong...</h2>';
         echo '<a href="index.php">Return</a>';
     } else {
+        include('table.html');
         echo '<a href="?action=new">New Game</a>';
     }
-    echo $_SESSION['fname'];    
-    ?>
+    // echo $_SESSION['fname'];   
+?>
 </body>
 </html>

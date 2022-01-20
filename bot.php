@@ -22,19 +22,17 @@
                         setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
                         stand($_SESSION['turn']);
                    }
+                } elseif ($totalBot == 21) {
+                    stand($_SESSION['turn']);
                 }
            }
        }
    }
 
    function endgame() {
-       echo "<h1>ENDGAME</h1>";
        global $playerHand;
        global $botHand;
 
-       print_r($playerHand);
-       echo "<br><br>";
-       print_r($botHand);
        $finalPlayer = countCards($playerHand);
        $finalBot = countCards($botHand);
 
@@ -42,7 +40,7 @@
            if ($finalBot > 21) {
                return "Tie";
            } else {
-               return "Bot Wins";
+               return "Dealer Wins";
            }
        } elseif ($finalPlayer == $finalBot) {
             return "Tie";
@@ -53,7 +51,7 @@
                if ($finalPlayer > $finalBot) {
                    return "PlayerWins";
                } else {
-                   return "Bot Wins";
+                   return "Dealer Wins";
                }
            }
        }

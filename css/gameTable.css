@@ -2,9 +2,18 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+@keyframes prueba {
+    0% {background-position: left;}
+    100% {background-position: right;}
+}
+
 html{
-    background-color: rgb(13, 13, 13);
+    background: linear-gradient(0deg, rgba(12,0,50,1) 0%, rgba(36,0,144,1) 100%);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    animation-name: prueba;
+    animation-iteration-count: infinite;
+    animation-duration: 2s;
+    animation-direction: alternate;
 }
 
 body{
@@ -14,6 +23,15 @@ body{
     align-items: center;
     height: 100vh;
     margin: 0;
+}
+
+a{
+    text-decoration: none;
+    border: 1.5px solid white;
+    padding: 8px;
+    color: white;
+    border-radius: 8px;
+    margin: 8px;
 }
 
 .table{
@@ -54,4 +72,9 @@ body{
 .scoreTable th, td {
     border: 1px solid white;
     padding: 4px;
+}
+
+.winner{
+    text-align: center;
+    color: #864dd6;
 }

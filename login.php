@@ -21,7 +21,7 @@ if (isset($_POST['fname'])){
 	$password = mysqli_real_escape_string($dbc,$password);
 	//Checking is user existing in the database or not
         $query = "SELECT * FROM `users` WHERE name='$username'and password=SHA2($password,512)";
-	$result = mysqli_query($dbc,$query) or die(mysql_error());
+	$result = mysqli_query($dbc,$query) or die(mysqli_error());
 	$rows = mysqli_num_rows($result);
         if($rows==1){
 	    $_SESSION['fname'] = $username;
