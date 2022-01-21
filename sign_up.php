@@ -31,25 +31,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if (empty($errors)) { 
 
-		
-		$q = "INSERT INTO users (name, email, password, balance) VALUES ('$fname', '$mail', SHA2('$p', 512),0)";
-		$r = @mysqli_query($dbc, $q); 
-		if ($r) { 
-
-			echo '<h1>Thank you!</h1>
-		<p>You are now registered!</p><p><br></p>';
-
-		} else { 
-			echo '<h1>System Error</h1>
-			<p class="error">You could not be registered due to a system error.</p>';
-
-			echo '<p>' . mysqli_error($dbc) . '<br><br>Query: ' . $q . '</p>';
-
-		} 
-
-		mysqli_close($dbc); 
-		exit();
-
+		$query = "SELECT * FROM users WHERE email = '$mail'";
+		$result = mysqli_query($dbc, $query);
+		if (mysqli_num_rows($result) == 0) {
+			$q = "INSERT INTO users (name, email, password, balance) VALUES ('$fname', '$mail', SHA2('$p', 512),0)";
+			$r = @mysqli_query($dbc, $q); 
+			if ($r) { 
+	
+				echo '<h1>Thank you!</h1>
+			<p>You are now registered!</p><p><br></p>';
+	
+			} else { 
+				echo '<h1>System Error</h1>
+				<p class="error">You could not be registered due to a system error.</p>';
+	
+				echo '<p>' . mysqli_error($dbc) . '<br><br>Query: ' . $q . '</p>';
+	
+			} 
+	
+			mysqli_close($dbc); 
+			exit();
+		} else {
+			$existRegister = true;
+		}
 	} else {
 
 		echo '<h1>Error!</h1>
@@ -72,4 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<p>Password: <input type="password" name="pass1" size="10" maxlength="20" value="<?php if (isset($_POST['pass1'])) echo $_POST['pass1']; ?>" ></p>
 	<p>Confirm Password: <input type="password" name="pass2" size="10" maxlength="20" value="<?php if (isset($_POST['pass2'])) echo $_POST['pass2']; ?>" ></p>
 	<p><input type="submit" name="submit" value="Register"></p>
+	<?php 
+		if (isset($existRegister)) {
+			echo "<h2 style='color: red'>This email is already registered!<h2>";
+		}
+	?>
 </form>

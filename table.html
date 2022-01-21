@@ -5,9 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/gameTable.css">
+    <link rel="stylesheet" href="css/style.css">
     <title>Document</title>
 </head>
 <body>
+    <?php include('components/navbar.html') ?>
     <?php if(isset($_GET['action']) && $_GET['action'] == 'end' && isset($_SESSION['token'])) { ?><h2 class="winner"><?php echo endgame()?></h2><?php } ?>
     <div class="table">
         <div class="score">
@@ -15,7 +17,7 @@
             <h2>Player: <span><?php echo arrayToBJ($playerHand)?></span></h2>
             <h2>Dealer: <span><?php echo arrayToBJ($botHand) ?></span></h2>
             <?php } else { ?>
-            <h2>Welcome to Blackjack</h2>
+            <h2>Welcome <?php echo $userInfo['name'] ?> to Blackjack</h2>
             <?php } ?>
         </div>
     </div>

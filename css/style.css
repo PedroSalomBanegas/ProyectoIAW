@@ -20,6 +20,8 @@ body{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    position: absolute;
+    top: 0;
 }
 
 .navbar a {
@@ -35,11 +37,28 @@ body{
 
 #navRight{
     margin-right: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
-#user {
+.icons {
     width: 32px;
     height: 32px;
     color: white;
 }
 
+.balanceNav{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+}
+
+.balanceNav span{
+    font-size: 1.25rem;
+    margin-right: 8px;
+    color: white;
+}

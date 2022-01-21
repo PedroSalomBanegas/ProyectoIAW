@@ -1,10 +1,9 @@
 <?php
    function bot() {
        global $botHand;
-       global $turn;
        $totalBot = countCards($botHand);
        $_SESSION['turn'] = false;
-       //print_r($botHand);
+
        if ($totalBot == 21 ) {
            stand($_SESSION['turn']);
        } else {
@@ -13,7 +12,7 @@
                $totalBot = countCards($botHand);
                if ($totalBot > 21) {
                    $error = rand(1, 10);
-                   if ($error >= 5) {
+                   if ($error > 3) {
                         unset($botHand[count($botHand) - 1]);
                         $botHand = array_values($botHand);
                         setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
@@ -49,7 +48,7 @@
                return "Player Wins";
            } else {
                if ($finalPlayer > $finalBot) {
-                   return "PlayerWins";
+                   return "Player Wins";
                } else {
                    return "Dealer Wins";
                }

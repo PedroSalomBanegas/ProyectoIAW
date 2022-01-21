@@ -1,20 +1,19 @@
 <?php 
 
-// ------------------------          
-//          NOTAS
-// No se van borrar las cookies si se utilizará alguna función que las genere (ej: begin, hit, etc...)
-// ¿Solución?
-// Para evitar que alguien no ejecute la web con una acción directa y rompa la ejecución del juego, poner una cookie de control que se genere con ?action=new??
-// -------------------------
-
 session_start();
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $_SESSION['bet'] = $_POST['bet'];
+    header('location: http://localhost/ProyectoIAW/index.php?action=new');
+    exit();
+}
+
+include('userCheck.php');
 include('includes.php');
 include('bot.php');
 
 $_SESSION['turn'] = true;
 
-// -- EXPERIMENTAL!! --
 if(isset($_GET['action']) && isset($_SESSION['token'])){
     if ($_GET['action'] == "new") {
         $gameDeck = $deck;
@@ -22,7 +21,6 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
         $gameDeck = json_decode($_COOKIE['deck'], true);
     }
 }
-// -- EXPERIMENTAL !! --
 
 if(isset($_COOKIE['playerHand']) && isset($_SESSION['token'])){
     $playerHand = json_decode($_COOKIE['playerHand'], true);
@@ -51,19 +49,18 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     } elseif ($action == "reset" && isset($_SESSION['status'])) {
         clearCookies();
         $_SESSION=[];
-        $_SESSION['fname'] = $username;
+        $_SESSION['username'] = $username;
         $_SESSION['token']=true;
         header('Location: http://localhost/ProyectoIAW/index.php');
     }
 } elseif (isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) {
     clearCookies();
 } else {
-    $username = $_SESSION['fname'];
     //First time enter 
+    $username = $_SESSION['username'];
     clearCookies();
-    // setcookie('token', true, (time()+3600*24*30)); //HACERLO CON SESIONES!!!!
     $_SESSION=[];
-    $_SESSION['fname'] = $username;
+    $_SESSION['username'] = $username;
     $_SESSION['token']=true;
 }
 
@@ -71,7 +68,6 @@ function drawCard() {
     // Author: Pedro
     global $gameDeck;
     global $playerHand;
-    global $botHand;
 
     $randomCard = rand(0, count($gameDeck) - 1);
     saveCards($gameDeck[$randomCard]);
@@ -89,9 +85,6 @@ function begin() {
     //Author: Jaime
     setcookie('playerHand', '', 0);
     setcookie('botHand', '', 0);
-
-    global $playerHand;
-    global $botHand;
 
         for ($i=0; $i < 4 ; $i++) { 
             if ($i < 2) {
@@ -122,8 +115,7 @@ function countCards($hand) {
     //Author: Jaime
     $Total=0;
     $numHand = count($hand);
-    // print_r($hand);
-    // echo "<br><br>";
+
     for ($i=0; $i < $numHand; $i++) {
         if ($hand[$i]["value"] == 11 && $Total > 21) {
             $Total = $Total + 1;
@@ -141,6 +133,7 @@ function countCards($hand) {
             }
         }
     }
+    
     if ($Total == 2) {
         return 12;
     } else {
@@ -149,8 +142,7 @@ function countCards($hand) {
 }
 
 function stand($turn){
-    global $playerHand;
-    global $botHand;
+    //Author: Pedro
     if ($turn) {
         bot();
     } else {
@@ -159,21 +151,65 @@ function stand($turn){
 }
 
 function clearCookies(){
+    //Author: Pedro
     setcookie('deck', '', 0);
     setcookie('playerHand', '', 0);
     setcookie('botHand', '', 0);
 }
 
-// echo "<br>";
-// echo "<br>";
-// echo "<br>";
-// echo "<br>";
+function updateBalance(){
+    //Author: Pedro
+    global $userInfo;
+    global $dbc;
+    $gameResult = endgame();
+    $username = $userInfo['name'];
+    $balance = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT balance FROM users WHERE name = '$username'"));
+    $balance = $balance['balance'];
 
-// echo countCards($playerHand);
-// echo "<br>";
-// echo countCards($botHand);
+    if ($gameResult == "Dealer Wins") {
+        $balanceUpdate = $balance - $_SESSION['bet'];
+        $query = "UPDATE users SET balance=$balanceUpdate WHERE name = '$username'";
+        mysqli_query($dbc, $query);
+    } elseif ($gameResult == "Player Wins") {
+        $balanceUpdate = $balance + $_SESSION['bet'];
+        $query = "UPDATE users SET balance=$balanceUpdate WHERE name = '$username'";
+        mysqli_query($dbc, $query);
+    }
+
+    gameHistory($username, $_SESSION['bet'], $gameResult);
+}
+
+function gameHistory($user, $bet, $result){
+    //Author: Pedro
+    global $playerHand;
+    global $botHand;
+    global $dbc;
+
+    $userTotal = countCards($playerHand);
+    $dealerTotal = countCards($botHand);
+    
+    switch ($result) {
+        case 'Dealer Wins':
+            $result = "Lose";
+            break;
+
+        case 'Player Wins':
+            $result = "Win";
+            break;
+        
+        default:
+            $result = "Tie";
+            break;
+    }
+
+    $query = "INSERT INTO history (status, playerTotal, dealerTotal, bet, user) VALUES ('$result', '$userTotal', '$dealerTotal', '$bet', '$user')";
+    mysqli_query($dbc, $query);
+    mysqli_close($dbc); 
+
+}
 
 function arrayToBJ($hand) {
+    //Author: Jaime
     $numHand = count($hand);
     $string = "";
     for ($i=0; $i < $numHand; $i++) { 
@@ -190,16 +226,21 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     $action = $_GET['action'];
 
     if ($_GET['action'] == "end" && isset($_SESSION['status'])) {
+        updateBalance();
         include('table.html');
         echo '<a href="?action=reset">Play again</a>';
     } elseif ($action == "hit" && isset($_SESSION['status'])){
             include('table.html');
-            echo '<a href="?action=hit">Hit</a>';
-            echo '<a href="?action=stand">Stand</a>';   
-    } elseif ($action == "new" && !isset($_SESSION['status'])) {
-            include('table.html');
+            echo '<div class="controllers">';
             echo '<a href="?action=hit">Hit</a>';
             echo '<a href="?action=stand">Stand</a>';
+            echo '</div>';
+    } elseif ($action == "new" && !isset($_SESSION['status'])) {
+            include('table.html');
+            echo '<div class="controllers">';
+            echo '<a href="?action=hit">Hit</a>';
+            echo '<a href="?action=stand">Stand</a>';
+            echo '</div>';
             $_SESSION['status']=true; //Generate here for security
     } else {
             include('table.html');
@@ -212,9 +253,27 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
         echo '<a href="index.php">Return</a>';
     } else {
         include('table.html');
-        echo '<a href="?action=new">New Game</a>';
+        ?>
+        <form action="index.php" method="POST" class="betForm">
+            <label>Bet amount: </label>
+            <select name="bet" class="betSelect">
+                <?php 
+                    $betAvaible = 0;
+                    while ($betAvaible <= $userInfo['balance']) {
+                        if ($betAvaible >= 100) {
+                            echo "<option value=$betAvaible>$betAvaible</option>";
+                            $betAvaible += 50;
+                        } else {
+                            echo "<option value=$betAvaible>$betAvaible</option>";
+                            $betAvaible += 10;
+                        }
+                    }
+                ?>
+            </select>
+            <input type="submit" value="Play" class="playButton">
+        </form>
+        <?php
     }
-    // echo $_SESSION['fname'];   
 ?>
 </body>
 </html>
