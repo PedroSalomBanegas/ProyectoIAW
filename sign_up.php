@@ -1,9 +1,9 @@
 <?php
 $page_title = 'Sign Up';
+require('./mysql.php'); 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	require('./mysql.php'); 
 
 	$errors = [];
 
@@ -31,29 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 	if (empty($errors)) { 
 
-		$query = "SELECT * FROM users WHERE email = '$mail'";
+		$query = "SELECT * FROM users WHERE email = '$mail' OR name = '$fname'";
 		$result = mysqli_query($dbc, $query);
 		if (mysqli_num_rows($result) == 0) {
-			$q = "INSERT INTO users (name, email, password, balance) VALUES ('$fname', '$mail', SHA2('$p', 512),0)";
+			$q = "INSERT INTO users (name, email, password, balance) VALUES ('$fname', '$mail', SHA2('$p', 512),300)";
 			$r = @mysqli_query($dbc, $q); 
-			if ($r) { 
-	
-				echo '<h1>Thank you!</h1>
-			<p>You are now registered!</p><p><br></p>';
-	
-			} else { 
-				echo '<h1>System Error</h1>
-				<p class="error">You could not be registered due to a system error.</p>';
-	
-				echo '<p>' . mysqli_error($dbc) . '<br><br>Query: ' . $q . '</p>';
-	
-			} 
-	
-			mysqli_close($dbc); 
-			exit();
 		} else {
-			$existRegister = true;
+			$existInfo = true;
 		}
+		
 	} else {
 		echo '<h1 style="color: red">Error!</h1>
 		<p class="error" style="color: white">The following error(s) occurred:<br>';
@@ -63,8 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		echo '</p><p style="color: orange"><b>Please try again.</b></p>';
 
 	} 
-
-	mysqli_close($dbc); 
 
 } 
 ?>
@@ -80,6 +64,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	<title>Document</title>
 </head>
 <body>
+<?php 
+	if (isset($existInfo)) {
+	    echo "<h2 style='color: red'>This email or name is already registered!</h2>";
+	}
+				
+	if (isset($r) && $r && empty($errors)) { 
+	
+    	echo '<h1 style="color: white; font-weight: bold; margin-bottom: 8px; font-size: 2.75em">Welcome player!</h1>
+    	<p style="color: white; font-size: 1.85em">You are now registered!</p>
+        <a style="font-size: 1.5em" href="login.php">Login</a>';
+    } else {
+
+?>
 	<div class="form">
 		<h1>Register</h1>
 		<form action="sign_up.php" method="post" class="formInputs">
@@ -92,12 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			<label for="pass2">Confirm password</label>
 			<input type="password" name="pass2" size="10" maxlength="20" value="<?php if (isset($_POST['pass2'])) echo $_POST['pass2']; ?>" >
 			<input type="submit" name="submit" value="Register">
-			<?php 
-				if (isset($existRegister)) {
-					echo "<h2 style='color: red'>This email is already registered!<h2>";
-				}
-			?>
 		</form>
 	</div>
+	<?php } ?>
 </body>
 </html>
+<?php mysqli_close($dbc); ?>

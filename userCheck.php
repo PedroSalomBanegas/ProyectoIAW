@@ -10,10 +10,10 @@ if (isset($_SESSION['username'])) {
     if ($totalRows > 0) {
         $userInfo = $data;
     } else {
-        header('location:  http://localhost/ProyectoIAW/login.php');
+        header('location: login.php');
     }
 } else {
-    header('location:  http://localhost/ProyectoIAW/login.php');
+    header('location: login.php');
 }
 
 ?>

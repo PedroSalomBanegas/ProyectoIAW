@@ -4,7 +4,7 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['bet'] = $_POST['bet'];
-    header('location: http://localhost/ProyectoIAW/index.php?action=new');
+    header('location: index.php?action=newGame');
     exit();
 }
 
@@ -14,46 +14,45 @@ include('bot.php');
 
 $_SESSION['turn'] = true;
 
-if(isset($_GET['action']) && isset($_SESSION['token'])){
-    if ($_GET['action'] == "new") {
+if(isset($_GET['action']) && isset($_SESSION['gameToken'])){
+    if ($_GET['action'] == "newGame") {
         $gameDeck = $deck;
     } elseif (isset($_SESSION['status'])) {
-        $gameDeck = json_decode($_COOKIE['deck'], true);
+        $gameDeck = json_decode($_SESSION['deck'], true);
     }
 }
 
-if(isset($_COOKIE['playerHand']) && isset($_SESSION['token'])){
-    $playerHand = json_decode($_COOKIE['playerHand'], true);
+if(isset($_SESSION['playerHand']) && isset($_SESSION['gameToken'])){
+    $playerHand = json_decode($_SESSION['playerHand'], true);
 } else {
     $playerHand = [];
 }
 
-if(isset($_COOKIE['botHand']) && isset($_SESSION['token'])){
-    $botHand = json_decode($_COOKIE['botHand'], true);
+if(isset($_SESSION['botHand']) && isset($_SESSION['gameToken'])){
+    $botHand = json_decode($_SESSION['botHand'], true);
 } else {
     $botHand = [];
 }
 
 
-if(isset($_GET['action']) && isset($_SESSION['token'])){
+if(isset($_GET['action']) && isset($_SESSION['gameToken'])){
     $action = $_GET['action'];
 
     if($action == "hit" && isset($_SESSION['status'])){
         drawCard();
     } else if ($action == "stand" && isset($_SESSION['status'])){
-        echo $_SESSION['turn'];
         stand($_SESSION['turn']);
-    } elseif ($action == "new" && !isset($_SESSION['status'])) {
+    } elseif ($action == "newGame" && !isset($_SESSION['status'])) {
         $_SESSION['turn'] = true;
         begin();
     } elseif ($action == "reset" && isset($_SESSION['status'])) {
         clearCookies();
         $_SESSION=[];
         $_SESSION['username'] = $username;
-        $_SESSION['token']=true;
-        header('Location: http://localhost/ProyectoIAW/index.php');
+        $_SESSION['gameToken']=true;
+        header('Location: index.php');
     }
-} elseif (isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) {
+} elseif (isset($_GET['action']) && !isset($_SESSION['gameToken']) && !isset($_SESSION['status'])) {
     clearCookies();
 } else {
     //First time enter 
@@ -61,7 +60,7 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     clearCookies();
     $_SESSION=[];
     $_SESSION['username'] = $username;
-    $_SESSION['token']=true;
+    $_SESSION['gameToken']=true;
 }
 
 function drawCard() {
@@ -73,7 +72,8 @@ function drawCard() {
     saveCards($gameDeck[$randomCard]);
     unset($gameDeck[$randomCard]);
     $gameDeck = array_values($gameDeck);
-    setcookie("deck", json_encode($gameDeck), (time()+3600*24*30));
+    $_SESSION['deck'] = json_encode($gameDeck);
+    
 
     // stand if user have more than 21
     if ($_SESSION['turn'] && countCards($playerHand) >= 21) {
@@ -82,19 +82,25 @@ function drawCard() {
 }
 
 function begin() {
-    //Author: Jaime
-    setcookie('playerHand', '', 0);
-    setcookie('botHand', '', 0);
-
+    // Author: Jaime
+    
+    // $turn = $_SESSION['turn'];
+    // $_SESSION=[];
+    // $_SESSION['turn'] = $turn;
+    
         for ($i=0; $i < 4 ; $i++) { 
             if ($i < 2) {
+
                 drawCard();
             } else {
                 $_SESSION['turn'] = false;
                 drawCard();
             }
         }
+
         $_SESSION['turn'] = true;
+        // print_r($_SESSION);
+        // exit();
     }
 
 function saveCards($card) {
@@ -104,10 +110,10 @@ function saveCards($card) {
     
     if ($_SESSION['turn']) {
         $playerHand[] = $card;
-        setcookie("playerHand", json_encode($playerHand), (time()+3600*24*30));
+        $_SESSION['playerHand'] = json_encode($playerHand);
     } else {
         $botHand[] = $card;
-        setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+        $_SESSION['botHand'] = json_encode($botHand);
     }
 }
 
@@ -146,7 +152,7 @@ function stand($turn){
     if ($turn) {
         bot();
     } else {
-        header('Location: http://localhost/ProyectoIAW/index.php?action=end');
+        header('Location:https://sjoblackjack.000webhostapp.com/index.php?action=end');
     }
 }
 
@@ -222,12 +228,12 @@ function arrayToBJ($hand) {
     return $string;
 }
 
-if(isset($_GET['action']) && isset($_SESSION['token'])){
+if(isset($_GET['action']) && isset($_SESSION['gameToken'])){
     $action = $_GET['action'];
 
     if ($_GET['action'] == "end" && isset($_SESSION['status'])) {
         if (!$_SESSION['status']) {
-            header('location:index.php');
+            header('location:https://sjoblackjack.000webhostapp.com/index.php');
             exit();
         }
         updateBalance();
@@ -242,7 +248,7 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
             echo '<a href="?action=hit">Hit</a>';
             echo '<a href="?action=stand">Stand</a>';
             echo '</div>';
-    } elseif ($action == "new" && !isset($_SESSION['status'])) {
+    } elseif ($action == "newGame" && !isset($_SESSION['status'])) {
             include('table.html');
             echo '<div class="controllers">';
             echo '<a href="?action=hit">Hit</a>';
@@ -255,7 +261,7 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
             echo '<a href="index.php">Return</a>';
     }
     
-    } elseif (isset($_GET['action']) && !isset($_SESSION['token']) && !isset($_SESSION['status'])) { 
+    } elseif (isset($_GET['action']) && !isset($_SESSION['gameToken']) && !isset($_SESSION['status'])) { 
         echo '<h2>It seems that something has gone wrong...</h2>';
         echo '<a href="index.php">Return</a>';
     } else {

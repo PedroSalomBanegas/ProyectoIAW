@@ -14,7 +14,6 @@ $username = $_SESSION['username'];
 $query = "SELECT * FROM history WHERE user = '$username' ORDER BY id DESC LIMIT $cont,10"; //You don't need a ; like you do in SQL
 $result = mysqli_query($dbc,$query);
 $total = mysqli_num_rows(mysqli_query($dbc, "SELECT * FROM history WHERE user = '$username'"));
-echo $total;
 
 $i = 0;
 
@@ -74,7 +73,7 @@ mysqli_close($dbc); //Make sure to close out the database connection
     <div class="controller">
         <?php 
             if ($cont > 10) {
-                echo "<a href=\"history.php?row=" . $cont - 20 . "\">Previos page</a>";
+                echo "<a href=\"history.php?row=" . ($cont - 20) . "\">Previos page</a>";
             }
 
             if ($total > 10 && $cont < $total) {

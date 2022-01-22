@@ -15,10 +15,11 @@
                    if ($error > 3) {
                         unset($botHand[count($botHand) - 1]);
                         $botHand = array_values($botHand);
-                        setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+                        $_SESSION['botHand'] = json_encode($botHand);
                         stand($_SESSION['turn']);
                    } else {
-                        setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+                        // setcookie("botHand", json_encode($botHand), (time()+3600*24*30));
+                        $_SESSION['botHand'] = json_encode($botHand);
                         stand($_SESSION['turn']);
                    }
                 } elseif ($totalBot == 21) {

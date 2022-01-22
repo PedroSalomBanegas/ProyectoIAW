@@ -10,7 +10,7 @@
 </head>
 <body>
     <?php include('components/navbar.html') ?>
-    <?php if(isset($_GET['action']) && $_GET['action'] == 'end' && isset($_SESSION['token'])) { ?><h2 class="winner"><?php echo endgame()?></h2><?php } ?>
+    <?php if(isset($_GET['action']) && $_GET['action'] == 'end' && isset($_SESSION['gameToken'])) { ?><h2 class="winner"><?php echo endgame()?></h2><?php } ?>
     <div class="table">
         <div class="score">
             <?php if(isset($_GET['action'])) { ?>
@@ -21,7 +21,7 @@
             <?php } ?>
         </div>
     </div>
-    <?php if(isset($_GET['action']) && isset($_SESSION['token'])) { ?>
+    <?php if(isset($_GET['action']) && isset($_SESSION['gameToken'])) { ?>
     <div class="scoreTableContainer">
         <table class="scoreTable">
             <thead>
