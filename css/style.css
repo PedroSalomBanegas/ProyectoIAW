@@ -2,16 +2,6 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-html{
-    background-color: rgb(13, 13, 13);
-}
-
-body{
-    width: 100%;
-    height: 100vh;
-    margin: 0;
-}
-
 .navbar{
     width: 100%;
     height: 48px;
@@ -20,23 +10,29 @@ body{
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    position: absolute;
+    position: fixed;
     top: 0;
 }
 
 .navbar a {
     text-decoration: none;
     color: white;
-    margin: 0px 8px;
-
 }
 
 #navLeft{
     margin-left: 8px;
 }
 
+#navLeft a {
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+}
+
 #navRight{
-    margin-right: 8px;
+    margin-right: 16px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -61,4 +57,8 @@ body{
     font-size: 1.25rem;
     margin-right: 8px;
     color: white;
+}
+
+.logout{
+    border: none;
 }

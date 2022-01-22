@@ -55,13 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$existRegister = true;
 		}
 	} else {
-
-		echo '<h1>Error!</h1>
-		<p class="error">The following error(s) occurred:<br>';
+		echo '<h1 style="color: red">Error!</h1>
+		<p class="error" style="color: white">The following error(s) occurred:<br>';
 		foreach ($errors as $msg) { 
 			echo " - $msg<br>\n";
 		}
-		echo '</p><p>Please try again.</p><p><br></p>';
+		echo '</p><p style="color: orange"><b>Please try again.</b></p>';
 
 	} 
 
@@ -69,16 +68,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 } 
 ?>
-<h1>Register</h1>
-<form action="sign_up.php" method="post">
-	<p>Name: <input type="text" name="fname" size="15" maxlength="20" value="<?php if (isset($_POST['fname'])) echo $_POST['fname']; ?>"></p>
-	<p>Email: <input type="email" name="email" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>" > </p>
-	<p>Password: <input type="password" name="pass1" size="10" maxlength="20" value="<?php if (isset($_POST['pass1'])) echo $_POST['pass1']; ?>" ></p>
-	<p>Confirm Password: <input type="password" name="pass2" size="10" maxlength="20" value="<?php if (isset($_POST['pass2'])) echo $_POST['pass2']; ?>" ></p>
-	<p><input type="submit" name="submit" value="Register"></p>
-	<?php 
-		if (isset($existRegister)) {
-			echo "<h2 style='color: red'>This email is already registered!<h2>";
-		}
-	?>
-</form>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/login.css">
+	<title>Document</title>
+</head>
+<body>
+	<div class="form">
+		<h1>Register</h1>
+		<form action="sign_up.php" method="post" class="formInputs">
+			<label for="fname">Name</label>
+			<input type="text" name="fname" size="15" maxlength="20" value="<?php if (isset($_POST['fname'])) echo $_POST['fname']; ?>">
+			<label for="email">Email</label>
+			<input type="email" name="email" size="20" maxlength="60" value="<?php if (isset($_POST['email'])) echo $_POST['email']; ?>" >
+			<label for="pass1">Password</label>
+			<input type="password" name="pass1" size="10" maxlength="20" value="<?php if (isset($_POST['pass1'])) echo $_POST['pass1']; ?>">
+			<label for="pass2">Confirm password</label>
+			<input type="password" name="pass2" size="10" maxlength="20" value="<?php if (isset($_POST['pass2'])) echo $_POST['pass2']; ?>" >
+			<input type="submit" name="submit" value="Register">
+			<?php 
+				if (isset($existRegister)) {
+					echo "<h2 style='color: red'>This email is already registered!<h2>";
+				}
+			?>
+		</form>
+	</div>
+</body>
+</html>

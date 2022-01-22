@@ -226,9 +226,16 @@ if(isset($_GET['action']) && isset($_SESSION['token'])){
     $action = $_GET['action'];
 
     if ($_GET['action'] == "end" && isset($_SESSION['status'])) {
+        if (!$_SESSION['status']) {
+            header('location:index.php');
+            exit();
+        }
         updateBalance();
         include('table.html');
+        echo '<div class="controllers">';
         echo '<a href="?action=reset">Play again</a>';
+        echo "</div>";
+        $_SESSION['status']=false;
     } elseif ($action == "hit" && isset($_SESSION['status'])){
             include('table.html');
             echo '<div class="controllers">';

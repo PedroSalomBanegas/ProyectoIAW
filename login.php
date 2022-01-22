@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Login</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/login.css">
+	<title>Document</title>
 </head>
 <body>
 <?php
@@ -36,13 +39,13 @@ if (isset($_POST['fname'])){
 ?>
 <div class="form">
 	<h1>Log In</h1>
-	<form action="login.php" method="post" name="login">
+	<form action="login.php" method="post" name="login" class="formInputs">
 		<input type="text" name="fname" placeholder="Username" required />
 		<input type="password" name="password" placeholder="Password" required />
 		<input name="submit" type="submit" value="Login" />
 	</form>
 	<p>Not registered yet? <a href='sign_up.php'>Register Here</a></p>
 </div>
-<?php } ?>
+<?php }  ?>
 </body>
 </html>
