@@ -83,6 +83,11 @@ function drawCard() {
 
 function begin() {
     // Author: Jaime
+    
+    // $turn = $_SESSION['turn'];
+    // $_SESSION=[];
+    // $_SESSION['turn'] = $turn;
+    
         for ($i=0; $i < 4 ; $i++) { 
             if ($i < 2) {
 
@@ -94,6 +99,8 @@ function begin() {
         }
 
         $_SESSION['turn'] = true;
+        // print_r($_SESSION);
+        // exit();
     }
 
 function saveCards($card) {
@@ -249,9 +256,9 @@ if(isset($_GET['action']) && isset($_SESSION['gameToken'])){
             echo '</div>';
             $_SESSION['status']=true; //Generate here for security
     } else {
-            include('table.html');
-            echo '<h2>It seems that something has gone wrong...</h2>';
-            echo '<a href="index.php">Return</a>';
+            echo '<link rel="stylesheet" href="css/gameTable.css">';
+            echo '<h2 style="color: white">It seems that something has gone wrong...</h2>';
+            echo '<a href="index.php" style="color: rgb(221, 54, 255); text-decoration: none">Return</a>';
     }
     
     } elseif (isset($_GET['action']) && !isset($_SESSION['gameToken']) && !isset($_SESSION['status'])) { 
