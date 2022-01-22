@@ -83,11 +83,6 @@ function drawCard() {
 
 function begin() {
     // Author: Jaime
-    
-    // $turn = $_SESSION['turn'];
-    // $_SESSION=[];
-    // $_SESSION['turn'] = $turn;
-    
         for ($i=0; $i < 4 ; $i++) { 
             if ($i < 2) {
 
@@ -99,8 +94,6 @@ function begin() {
         }
 
         $_SESSION['turn'] = true;
-        // print_r($_SESSION);
-        // exit();
     }
 
 function saveCards($card) {
